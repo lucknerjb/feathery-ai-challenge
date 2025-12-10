@@ -22,7 +22,7 @@ export const extractionSchema = z.object({
         .array(
           z.object({
             type: z.enum(['cash', 'stock', 'bond', 'mutual_fund', 'etf', 'other']),
-            name: z.string().describe('Name of the asset, for example: "Apple Inc. (AAPL)"'),
+            name: z.string().describe('Name of the asset, for example: "Apple Inc. (AAPL)". There can be multiple assets per type'),
             value: z.number().describe('Current dollar value of the asset'),
           }),
         )

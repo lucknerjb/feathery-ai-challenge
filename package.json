@@ -8,10 +8,15 @@
     "npm": ">=10.9.0"
   },
   "scripts": {
-    "extract": "tsx --env-file .env src/index.ts"
+    "final": "tsx --env-file .env src/final.ts",
+    "analyze": "tsx --env-file .env src/analyze.ts",
+    "extract": "tsx --env-file .env src/index.ts",
+    "extract2": "tsx --env-file .env src/index2.ts",
+    "parse": "tsx --env-file .env src/parse.ts"
   },
   "dependencies": {
     "openai": "^5.10.2",
+    "pdf-parse": "^2.4.5",
     "zod": "^4.0.10"
   },
   "devDependencies": {
