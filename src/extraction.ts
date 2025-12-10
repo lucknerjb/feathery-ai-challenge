@@ -11,7 +11,6 @@ import OpenAI from 'openai';
 import { EXTRACTION_MESSAGE, INITIAL_PROMPT } from './messages.js';
 import { extractionSchema } from './schema.js';
 import * as z from 'zod';
-import * as fs from 'node:fs';
 import { PDFParse } from 'pdf-parse';
 
 const client = new OpenAI({
@@ -19,8 +18,6 @@ const client = new OpenAI({
 });
 
 export async function extract(pdfBuffer: Buffer) {
-  console.log('-- Starting extract function --');
-
     const parser = new PDFParse(new Uint8Array(pdfBuffer));
     const result = await parser.getText();
 
@@ -32,16 +29,9 @@ export async function extract(pdfBuffer: Buffer) {
     top_p: 0.1,
     input: [
       {
-        // type: 'message',
+        type: 'message',
         role: 'user',
         content: [
-          // {
-          //   type: 'input_file',
-          //   // file_id: 'file-8jUoMzRQ1aNU7XWBYEVQF6', // PDF
-          //   file_id: 'file-RVXcvnq8Rru4iGm8N5jtP7', // TXT
-          //   // filename: 'financial_statement.txt',
-          //   // file_data: `data:text/plain;base64,${pdfBuffer.toString('base64')}`,
-          // },
           {
             type: 'input_text',
             text: INITIAL_PROMPT(result.text),
