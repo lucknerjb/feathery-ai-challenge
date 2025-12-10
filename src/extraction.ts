@@ -8,30 +8,43 @@
  */
 
 import OpenAI from 'openai';
-import { EXTRACTION_MESSAGE } from './messages.js';
+import { EXTRACTION_MESSAGE, INITIAL_PROMPT } from './messages.js';
 import { extractionSchema } from './schema.js';
 import * as z from 'zod';
+import * as fs from 'node:fs';
+import { PDFParse } from 'pdf-parse';
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function extract(pdfBuffer: Buffer) {
+  console.log('-- Starting extract function --');
+
+    const parser = new PDFParse(new Uint8Array(pdfBuffer));
+    const result = await parser.getText();
+
   const response = await client.responses.parse({
-    model: 'gpt-4.1',
+    model: 'gpt-4o',
     max_output_tokens: 5000,
-    instructions: 'You are a helpful assistant that extracts information from a PDF file.',
+    instructions: 'You are a helpful assistant that extracts financial data from brokerage statements.',
     temperature: 0,
     top_p: 0.1,
     input: [
       {
-        type: 'message',
+        // type: 'message',
         role: 'user',
         content: [
+          // {
+          //   type: 'input_file',
+          //   // file_id: 'file-8jUoMzRQ1aNU7XWBYEVQF6', // PDF
+          //   file_id: 'file-RVXcvnq8Rru4iGm8N5jtP7', // TXT
+          //   // filename: 'financial_statement.txt',
+          //   // file_data: `data:text/plain;base64,${pdfBuffer.toString('base64')}`,
+          // },
           {
-            type: 'input_file',
-            filename: 'financial_statement.pdf',
-            file_data: `data:application/pdf;base64,${pdfBuffer.toString('base64')}`,
+            type: 'input_text',
+            text: INITIAL_PROMPT(result.text),
           },
           {
             type: 'input_text',
